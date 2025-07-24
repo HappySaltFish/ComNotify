@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="i18n">
+<file alias="ComNotify_en_AS.qm">E:/doc/project/Qt/testprj/ComNotify/build/Desktop_Qt_5_15_1_MinGW_64_bit-Debug/debug/ComNotify_en_AS.qm</file>
+<file alias="ComNotify_zh_CN.qm">E:/doc/project/Qt/testprj/ComNotify/build/Desktop_Qt_5_15_1_MinGW_64_bit-Debug/debug/ComNotify_zh_CN.qm</file>
+</qresource>
+</RCC>
