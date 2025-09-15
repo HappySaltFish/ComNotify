@@ -18,6 +18,8 @@
 #include <QLocale>
 #include <QTranslator>
 
+#include <QThread>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;

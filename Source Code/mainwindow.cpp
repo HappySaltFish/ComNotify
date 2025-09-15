@@ -9,8 +9,10 @@ QTimer *scan_timer;
 
 //定义一个容器，用来存储当前的COM口列表
 QVector<QString> com_now_vec;
-//定义一个容器，用来存储当前的COM口列表
+//定义一个容器，用来存储扫面的COM口列表
 QVector<QString> com_scan_vec;
+//定义一个容器，用来存储显示的COM口列表
+QVector<QString> com_view_vec;
 
 QList<QSerialPortInfo>list;
 
@@ -66,18 +68,46 @@ static void _com_port_vec_init (void)
 void MainWindow::scan_serial_com_port(void)
 {
     /*获取当前可用的串口*/
-    list=QSerialPortInfo::availablePorts();
+    QString str=NULL;
+    /*连续扫描*/
+//    for(int i=0;i<5;i++){
+        list=QSerialPortInfo::availablePorts();
+    //     QThread::msleep(30);
+    // }
     com_scan_vec.clear();
     for(int i=0; i<list.size();i++){
-        /*记录扫描到的串口*/
-        com_scan_vec.append(list.at(i).portName());
+
         /*新增串口*/
         if(com_now_vec.contains(list.at(i).portName())==false && notify_en == true){
-            tray->showMessage(QObject::tr("检测到新串口"),list.at(i).description()+"("+list.at(i).portName()+")",QIcon(":/ico/res/com.ico"));
+                /*连续扫描，保证同时插入的串口能一次扫描到*/
+                for(int i=0;i<5;i++){
+                    list=QSerialPortInfo::availablePorts();
+                    QThread::msleep(30);
+                }
+                for(int i=0; i<list.size();i++){
+                    /*记录扫描到的串口*/
+                    com_scan_vec.append(list.at(i).portName());
+                    if(com_now_vec.contains(list.at(i).portName())==false && notify_en == true){
+                        str+=list.at(i).description()+"("+list.at(i).portName()+")\r\n";
+                    }
+                }
+                break;
         }
+        /*记录扫描到的串口*/
+        com_scan_vec.append(list.at(i).portName());
+    }
+    if(str != NULL){
+        tray->showMessage(QObject::tr("检测到新串口"),str,QIcon(":/ico/res/com.ico"));
     }
     com_now_vec = com_scan_vec;
+
 }
+
+// /*新增串口*/
+// if(com_now_vec.contains(list.at(i).portName())==false && notify_en == true){
+
+// }
+// com_scan_vec.append(list.at(i).portName());
 
 //右键退出
 void MainWindow::exit_action_triggered (void)
@@ -128,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent)
     //创建定时器，定时扫描串口
     scan_timer = new QTimer(this);
     connect(scan_timer, SIGNAL(timeout()), this, SLOT(scan_serial_com_port()));
-    scan_timer->start(100);
+    scan_timer->start(200);
     tray->showMessage("",QObject::tr("ComNotify已启动"),QSystemTrayIcon::NoIcon);
 }
 
